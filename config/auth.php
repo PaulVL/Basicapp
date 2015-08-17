@@ -64,4 +64,25 @@ return [
         'expire' => 60,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Account Activation Settings
+    |--------------------------------------------------------------------------
+    |
+    | Here you may set the options for activating accounts including the view
+    | that is your account activation e-mail. You can also set the name of the
+    | table that maintains all of the activation tokens for your application.
+    |
+    | The expire time is the number of days that the activation token should be
+    | considered valid. This security feature keeps tokens short-lived so
+    | they have less time to be guessed. You may change this as needed.
+    |
+    */
+
+    'activation' => [
+        'email' => 'emails.activation',
+        'table' => 'account_activations',
+        'expire' => 7,
+    ],
+
 ];
