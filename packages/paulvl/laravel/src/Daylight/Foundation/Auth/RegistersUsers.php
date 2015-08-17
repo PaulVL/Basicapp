@@ -1,9 +1,10 @@
 <?php
 
-namespace Illuminate\Foundation\Auth;
+namespace Daylight\Foundation\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\RedirectsUsers;
 
 trait RegistersUsers
 {
@@ -35,7 +36,11 @@ trait RegistersUsers
             );
         }
 
-        Auth::login($this->create($request->all()));
+        $user = $this->create($request->all());
+
+        return $this->postActivateAccount($request);
+
+        //Auth::login();
 
         return redirect($this->redirectPath());
     }

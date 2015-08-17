@@ -1,6 +1,6 @@
 <?php
 
-namespace Daylight\Auth\Passwords;
+namespace Daylight\Auth\Accounts;
 
 use Illuminate\Support\ServiceProvider;
 use Daylight\Auth\Accounts\DatabaseTokenRepository as DbRepository;

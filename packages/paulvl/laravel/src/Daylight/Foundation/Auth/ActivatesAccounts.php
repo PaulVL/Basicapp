@@ -5,10 +5,10 @@ namespace Daylight\Foundation\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Activation;
+use Daylight\Support\Facades\Activation;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-trait ActivateAccounts
+trait ActivatesAccounts
 {
     /**
      * Display the form to request a password reset link.
@@ -17,7 +17,7 @@ trait ActivateAccounts
      */
     public function getEmail()
     {
-        return view('auth.password');
+        return view('auth.activation');
     }
 
     /**
@@ -50,7 +50,7 @@ trait ActivateAccounts
      */
     protected function getEmailSubject()
     {
-        return isset($this->subject) ? $this->subject : 'Your Password Reset Link';
+        return isset($this->subject) ? $this->subject : 'Your Account Activation Link';
     }
 
     /**
@@ -65,38 +65,18 @@ trait ActivateAccounts
             throw new NotFoundHttpException;
         }
 
-        return view('auth.reset')->with('token', $token);
-    }
+        $credentials = ['token' => $token];
 
-    /**
-     * Reset the given user's password.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function postReset(Request $request)
-    {
-        $this->validate($request, [
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|confirmed|min:6',
-        ]);
-
-        $credentials = $request->only(
-            'email', 'password', 'password_confirmation', 'token'
-        );
-
-        $response = Activation::reset($credentials, function ($user, $password) {
-            $this->resetPassword($user, $password);
+        $response = Activation::activate($credentials, function ($user) {
+            $this->activateAccount($user);
         });
 
         switch ($response) {
-            case Activation::PASSWORD_RESET:
+            case Activation::ACCOUNT_ACTIVATION:
                 return redirect($this->redirectPath());
 
             default:
                 return redirect()->back()
-                            ->withInput($request->only('email'))
                             ->withErrors(['email' => trans($response)]);
         }
     }
@@ -104,13 +84,12 @@ trait ActivateAccounts
     /**
      * Reset the given user's password.
      *
-     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
-     * @param  string  $password
+     * @param  \Daylight\Contracts\Auth\CanActivateAccunt  $user
      * @return void
      */
-    protected function resetPassword($user, $password)
+    protected function activateAccount($user)
     {
-        $user->password = bcrypt($password);
+        $user->active = true;
 
         $user->save();
 
@@ -129,5 +108,15 @@ trait ActivateAccounts
         }
 
         return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
+    }
+
+    /**
+     * Get the path to the login route.
+     *
+     * @return string
+     */
+    public function loginPath()
+    {
+        return property_exists($this, 'loginPath') ? $this->loginPath : '/auth/login';
     }
 }

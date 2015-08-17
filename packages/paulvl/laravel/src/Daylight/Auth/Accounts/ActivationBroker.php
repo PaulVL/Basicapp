@@ -1,13 +1,13 @@
 <?php
 
-namespace Daylight\Auth\Passwords;
+namespace Daylight\Auth\Accounts;
 
 use Closure;
 use UnexpectedValueException;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Mail\Mailer as MailerContract;
-use Illuminate\Contracts\Auth\ActivationBroker as ActivationBrokerContract;
-use Illuminate\Contracts\Auth\CanActivateAccount as CanActivateAccountContract;
+use Daylight\Contracts\Auth\ActivationBroker as ActivationBrokerContract;
+use Daylight\Contracts\Auth\CanActivateAccount as CanActivateAccountContract;
 
 class ActivationBroker implements ActivationBrokerContract
 {
@@ -91,7 +91,7 @@ class ActivationBroker implements ActivationBrokerContract
 
         $this->emailActivationLink($user, $token, $callback);
 
-        return ActivationBrokerContract::RESET_LINK_SENT;
+        return ActivationBrokerContract::ACTIVATION_LINK_SENT;
     }
 
     /**
@@ -130,22 +130,20 @@ class ActivationBroker implements ActivationBrokerContract
         // If the responses from the validate method is not a user instance, we will
         // assume that it is a redirect and simply return it from this method and
         // the user is properly redirected having an error message on the post.
-        $user = $this->validateReset($credentials);
+        $user = $this->validateActivation($credentials);
 
         if (! $user instanceof CanActivateAccountContract) {
             return $user;
         }
 
-        $pass = $credentials['password'];
-
         // Once we have called this callback, we will remove this token row from the
         // table and return the response from this callback so the user gets sent
         // to the destination given by the developers from the callback return.
-        call_user_func($callback, $user, $pass);
+        call_user_func($callback, $user);
 
         $this->tokens->delete($credentials['token']);
 
-        return ActivationBrokerContract::PASSWORD_RESET;
+        return ActivationBrokerContract::ACCOUNT_ACTIVATION;
     }
 
     /**
@@ -154,14 +152,10 @@ class ActivationBroker implements ActivationBrokerContract
      * @param  array  $credentials
      * @return \Illuminate\Contracts\Auth\CanActivateAccount
      */
-    protected function validateReset(array $credentials)
+    protected function validateActivation(array $credentials)
     {
         if (is_null($user = $this->getUser($credentials))) {
             return ActivationBrokerContract::INVALID_USER;
-        }
-
-        if (! $this->validateNewPassword($credentials)) {
-            return ActivationBrokerContract::INVALID_PASSWORD;
         }
 
         if (! $this->tokens->exists($user, $credentials['token'])) {
@@ -169,54 +163,6 @@ class ActivationBroker implements ActivationBrokerContract
         }
 
         return $user;
-    }
-
-    /**
-     * Set a custom password validator.
-     *
-     * @param  \Closure  $callback
-     * @return void
-     */
-    public function validator(Closure $callback)
-    {
-        $this->passwordValidator = $callback;
-    }
-
-    /**
-     * Determine if the passwords match for the request.
-     *
-     * @param  array  $credentials
-     * @return bool
-     */
-    public function validateNewPassword(array $credentials)
-    {
-        list($password, $confirm) = [
-            $credentials['password'],
-            $credentials['password_confirmation'],
-        ];
-
-        if (isset($this->passwordValidator)) {
-            return call_user_func(
-                $this->passwordValidator, $credentials) && $password === $confirm;
-        }
-
-        return $this->validatePasswordWithDefaults($credentials);
-    }
-
-    /**
-     * Determine if the passwords are valid for the request.
-     *
-     * @param  array  $credentials
-     * @return bool
-     */
-    protected function validatePasswordWithDefaults(array $credentials)
-    {
-        list($password, $confirm) = [
-            $credentials['password'],
-            $credentials['password_confirmation'],
-        ];
-
-        return $password === $confirm && mb_strlen($password) >= 6;
     }
 
     /**

@@ -6,7 +6,7 @@ use Basicapp\User;
 use Validator;
 use Basicapp\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Daylight\Foundation\Auth\AuthenticatesRegistersActivatesUsers;
 
 class AuthController extends Controller
 {
@@ -21,7 +21,7 @@ class AuthController extends Controller
     |
     */
 
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+    use AuthenticatesRegistersActivatesUsers, ThrottlesLogins;
 
     // protected $redirectPath = '/';
 

@@ -2,6 +2,8 @@
 
 namespace Daylight\Support\Facades;
 
+use Illuminate\Support\Facades\Facade;
+
 /**
  * @see \Daylight\Auth\Accounts\ActivationBroker
  */
@@ -19,7 +21,7 @@ class Activation extends Facade
      *
      * @var string
      */
-    const ACCOUNT_ACTIVATION = 'activations.reset';
+    const ACCOUNT_ACTIVATION = 'activations.activated';
 
     /**
      * Constant representing the user not found response.
