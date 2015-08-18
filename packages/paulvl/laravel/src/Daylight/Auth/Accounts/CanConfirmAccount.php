@@ -1,15 +1,15 @@
 <?php
 
-namespace Illuminate\Auth\Passwords;
+namespace Daylight\Auth\Accounts;
 
-trait CanResetPassword
+trait CanConfirmAccount
 {
     /**
      * Get the e-mail address where password reset links are sent.
      *
      * @return string
      */
-    public function getEmailForPasswordReset()
+    public function getEmailForAccountConfirmation()
     {
         return $this->email;
     }

@@ -6,10 +6,10 @@ use Closure;
 use UnexpectedValueException;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Mail\Mailer as MailerContract;
-use Daylight\Contracts\Auth\ActivationBroker as ActivationBrokerContract;
-use Daylight\Contracts\Auth\CanActivateAccount as CanActivateAccountContract;
+use Daylight\Contracts\Auth\ConfirmationBroker as ConfirmationBrokerContract;
+use Daylight\Contracts\Auth\CanConfirmAccount as CanConfirmAccountContract;
 
-class ActivationBroker implements ActivationBrokerContract
+class ConfirmationBroker implements ConfirmationBrokerContract
 {
     /**
      * The password token repository.
@@ -67,13 +67,13 @@ class ActivationBroker implements ActivationBrokerContract
     }
 
     /**
-     * Send an account activation link to a user.
+     * Send an account confirmation link to a user.
      *
      * @param  array  $credentials
      * @param  \Closure|null  $callback
      * @return string
      */
-    public function sendActivationLink(array $credentials, Closure $callback = null)
+    public function sendConfirmationLink(array $credentials, Closure $callback = null)
     {
         // First we will check to see if we found a user at the given credentials and
         // if we did not we will redirect back to this current URI with a piece of
@@ -81,7 +81,7 @@ class ActivationBroker implements ActivationBrokerContract
         $user = $this->getUser($credentials);
 
         if (is_null($user)) {
-            return ActivationBrokerContract::INVALID_USER;
+            return ConfirmationBrokerContract::INVALID_USER;
         }
 
         // Once we have the reset token, we are ready to send the message out to this
@@ -89,28 +89,28 @@ class ActivationBroker implements ActivationBrokerContract
         // the current URI having nothing set in the session to indicate errors.
         $token = $this->tokens->create($user);
 
-        $this->emailActivationLink($user, $token, $callback);
+        $this->emailConfirmationLink($user, $token, $callback);
 
-        return ActivationBrokerContract::ACTIVATION_LINK_SENT;
+        return ConfirmationBrokerContract::CONFIRMATION_LINK_SENT;
     }
 
     /**
-     * Send the password reset link via e-mail.
+     * Send the account confirmation link via e-mail.
      *
-     * @param  \Daylight\Contracts\Auth\CanActivateAccount  $user
+     * @param  \Daylight\Contracts\Auth\CanConfirmAccount  $user
      * @param  string  $token
      * @param  \Closure|null  $callback
      * @return int
      */
-    public function emailActivationLink(CanActivateAccountContract $user, $token, Closure $callback = null)
+    public function emailConfirmationLink(CanConfirmAccountContract $user, $token, Closure $callback = null)
     {
-        // We will use the reminder view that was given to the broker to display the
-        // password reminder e-mail. We'll pass a "token" variable into the views
-        // so that it may be displayed for an user to click for password reset.
+        // We will use the confirmation view that was given to the broker to display the
+        // account confirmation e-mail. We'll pass a "token" variable into the views
+        // so that it may be displayed for an user to click for account confirmation.
         $view = $this->emailView;
 
         return $this->mailer->send($view, compact('token', 'user'), function ($m) use ($user, $token, $callback) {
-            $m->to($user->getEmailForPasswordReset());
+            $m->to($user->getEmailForAccountConfirmation());
 
             if (! is_null($callback)) {
                 call_user_func($callback, $m, $user, $token);
@@ -119,20 +119,20 @@ class ActivationBroker implements ActivationBrokerContract
     }
 
     /**
-     * Activate the account for the given token.
+     * Confirm the account for the given token.
      *
      * @param  array  $credentials
      * @param  \Closure  $callback
      * @return mixed
      */
-    public function activate(array $credentials, Closure $callback)
+    public function confirm(array $credentials, Closure $callback)
     {
         // If the responses from the validate method is not a user instance, we will
         // assume that it is a redirect and simply return it from this method and
         // the user is properly redirected having an error message on the post.
-        $user = $this->validateActivation($credentials);
+        $user = $this->validateConfirmation($credentials);
 
-        if (! $user instanceof CanActivateAccountContract) {
+        if (! $user instanceof CanConfirmAccountContract) {
             return $user;
         }
 
@@ -143,23 +143,23 @@ class ActivationBroker implements ActivationBrokerContract
 
         $this->tokens->delete($credentials['token']);
 
-        return ActivationBrokerContract::ACCOUNT_ACTIVATION;
+        return ConfirmationBrokerContract::ACCOUNT_CONFIRMATION;
     }
 
     /**
      * Validate a password reset for the given credentials.
      *
      * @param  array  $credentials
-     * @return \Illuminate\Contracts\Auth\CanActivateAccount
+     * @return \Illuminate\Contracts\Auth\CanConfirmAccount
      */
-    protected function validateActivation(array $credentials)
+    protected function validateConfirmation(array $credentials)
     {
         if (is_null($user = $this->getUser($credentials))) {
-            return ActivationBrokerContract::INVALID_USER;
+            return ConfirmationBrokerContract::INVALID_USER;
         }
 
         if (! $this->tokens->exists($user, $credentials['token'])) {
-            return ActivationBrokerContract::INVALID_TOKEN;
+            return ConfirmationBrokerContract::INVALID_TOKEN;
         }
 
         return $user;
@@ -169,7 +169,7 @@ class ActivationBroker implements ActivationBrokerContract
      * Get the user for the given credentials.
      *
      * @param  array  $credentials
-     * @return \Illuminate\Contracts\Auth\CanActivateAccount
+     * @return \Illuminate\Contracts\Auth\CanConfirmAccount
      *
      * @throws \UnexpectedValueException
      */
@@ -179,8 +179,8 @@ class ActivationBroker implements ActivationBrokerContract
 
         $user = $this->users->retrieveByCredentials($credentials);
 
-        if ($user && ! $user instanceof CanActivateAccountContract) {
-            throw new UnexpectedValueException('User must implement CanActivateAccount interface.');
+        if ($user && ! $user instanceof CanConfirmAccountContract) {
+            throw new UnexpectedValueException('User must implement CanConfirmAccount interface.');
         }
 
         return $user;

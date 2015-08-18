@@ -136,7 +136,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        Daylight\Auth\Accounts\AccountActivationServiceProvider::class,
+        Daylight\Auth\Accounts\AccountConfirmationServiceProvider::class,
 
         /*
          * Application Service Providers...

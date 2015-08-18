@@ -2,7 +2,7 @@
 
 namespace Daylight\Auth\Accounts;
 
-use Daylight\Contracts\Auth\CanActivateAccount as CanActivateAccountContract;
+use Daylight\Contracts\Auth\CanConfirmAccount as CanConfirmAccountContract;
 
 interface TokenRepositoryInterface
 {
@@ -12,7 +12,7 @@ interface TokenRepositoryInterface
      * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
      * @return string
      */
-    public function create(CanActivateAccountContract $user);
+    public function create(CanConfirmAccountContract $user);
 
     /**
      * Determine if a token record exists and is valid.
@@ -21,7 +21,7 @@ interface TokenRepositoryInterface
      * @param  string  $token
      * @return bool
      */
-    public function exists(CanActivateAccountContract $user, $token);
+    public function exists(CanConfirmAccountContract $user, $token);
 
     /**
      * Delete a token record.

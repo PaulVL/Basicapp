@@ -5,7 +5,7 @@ namespace Daylight\Auth\Accounts;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Database\ConnectionInterface;
-use Daylight\Contracts\Auth\CanActivateAccount as CanActivateAccountContract;
+use Daylight\Contracts\Auth\CanConfirmAccount as CanConfirmAccountContract;
 
 class DatabaseTokenRepository implements TokenRepositoryInterface
 {
@@ -50,7 +50,7 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
     {
         $this->table = $table;
         $this->hashKey = $hashKey;
-        $this->expires = $expires * 604800;
+        $this->expires = $expires * 86400;
         $this->connection = $connection;
     }
 
@@ -60,15 +60,15 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
      * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
      * @return string
      */
-    public function create(CanActivateAccountContract $user)
+    public function create(CanConfirmAccountContract $user)
     {
-        $email = $user->getEmailForAccountActivation();
+        $email = $user->getEmailForAccountConfirmation();
 
         $this->deleteExisting($user);
 
         // We will create a new, random token for the user so that we can e-mail them
         // a safe link to the password reset form. Then we will insert a record in
-        // the database so that we can verify the token within the actual reset.
+        // the database so that we can confirm the token within the actual reset.
         $token = $this->createNewToken();
 
         $this->getTable()->insert($this->getPayload($email, $token));
@@ -82,9 +82,9 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
      * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
      * @return int
      */
-    protected function deleteExisting(CanActivateAccountContract $user)
+    protected function deleteExisting(CanConfirmAccountContract $user)
     {
-        return $this->getTable()->where('email', $user->getEmailForAccountActivation())->delete();
+        return $this->getTable()->where('email', $user->getEmailForAccountConfirmation())->delete();
     }
 
     /**
@@ -106,9 +106,9 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
      * @param  string  $token
      * @return bool
      */
-    public function exists(CanActivateAccountContract $user, $token)
+    public function exists(CanConfirmAccountContract $user, $token)
     {
-        $email = $user->getEmailForAccountActivation();
+        $email = $user->getEmailForAccountConfirmation();
 
         $token = (array) $this->getTable()->where('email', $email)->where('token', $token)->first();
 

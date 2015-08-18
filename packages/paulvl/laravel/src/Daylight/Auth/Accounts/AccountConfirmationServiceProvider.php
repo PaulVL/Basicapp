@@ -3,9 +3,10 @@
 namespace Daylight\Auth\Accounts;
 
 use Illuminate\Support\ServiceProvider;
+use Daylight\Auth\Console\ClearConfirmationsCommand;
 use Daylight\Auth\Accounts\DatabaseTokenRepository as DbRepository;
 
-class AccountActivationServiceProvider extends ServiceProvider
+class AccountConfirmationServiceProvider extends ServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
@@ -21,9 +22,11 @@ class AccountActivationServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerActivationBroker();
+        $this->registerConfirmationBroker();
 
         $this->registerTokenRepository();
+
+        $this->registerClearConfirmationsCommand();
     }
 
     /**
@@ -31,22 +34,22 @@ class AccountActivationServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerActivationBroker()
+    protected function registerConfirmationBroker()
     {
-        $this->app->singleton('auth.activation', function ($app) {
-            // The activation token repository is responsible for storing the email addresses
-            // and activation reset tokens. It will be used to verify the tokens are valid
+        $this->app->singleton('auth.confirmation', function ($app) {
+            // The confirmation token repository is responsible for storing the email addresses
+            // and confirmation reset tokens. It will be used to confirm the tokens are valid
             // for the given e-mail addresses. We will resolve an implementation here.
-            $tokens = $app['auth.activation.tokens'];
+            $tokens = $app['auth.confirmation.tokens'];
 
             $users = $app['auth']->driver()->getProvider();
 
-            $view = $app['config']['auth.activation.email'];
+            $view = $app['config']['auth.confirmation.email'];
 
-            // The activation broker uses a token repository to validate tokens and send user
-            // activation e-mails, as well as validating that account activation process as an
+            // The confirmation broker uses a token repository to validate tokens and send user
+            // confirmation e-mails, as well as validating that account confirmation process as an
             // aggregate service of sorts providing a convenient interface for resets.
-            return new ActivationBroker(
+            return new ConfirmationBroker(
                 $tokens, $users, $app['mailer'], $view
             );
         });
@@ -59,20 +62,30 @@ class AccountActivationServiceProvider extends ServiceProvider
      */
     protected function registerTokenRepository()
     {
-        $this->app->singleton('auth.activation.tokens', function ($app) {
+        $this->app->singleton('auth.confirmation.tokens', function ($app) {
             $connection = $app['db']->connection();
 
             // The database token repository is an implementation of the token repository
             // interface, and is responsible for the actual storing of auth tokens and
             // their e-mail addresses. We will inject this table and hash key to it.
-            $table = $app['config']['auth.activation.table'];
+            $table = $app['config']['auth.confirmation.table'];
 
             $key = $app['config']['app.key'];
 
-            $expire = $app['config']->get('auth.activation.expire', 7);
+            $expire = $app['config']->get('auth.confirmation.expire', 7);
 
             return new DbRepository($connection, $table, $key, $expire);
         });
+    }
+     /**
+    * Register the auth:clear-confirmations command.
+    */
+    private function registerClearConfirmationsCommand()
+    {
+        $this->app->singleton('command.auth.confirmation.clear-confirmations', function ($app) {
+            return $app[ClearConfirmationsCommand::class];
+        });
+        $this->commands('command.auth.confirmation.clear-confirmations');
     }
 
     /**
@@ -82,6 +95,6 @@ class AccountActivationServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['auth.activation', 'auth.activation.tokens'];
+        return ['auth.confirmation', 'auth.confirmation.tokens'];
     }
 }

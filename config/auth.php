@@ -66,22 +66,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Account Activation Settings
+    | Account Confirmation Settings
     |--------------------------------------------------------------------------
     |
-    | Here you may set the options for activating accounts including the view
-    | that is your account activation e-mail. You can also set the name of the
-    | table that maintains all of the activation tokens for your application.
+    | Here you may set the options for confirmating accounts including the view
+    | that is your account confirmation e-mail. You can also set the name of the
+    | table that maintains all of the confirmation tokens for your application.
     |
-    | The expire time is the number of days that the activation token should be
+    | The expire time is the number of days that the confirmation token should be
     | considered valid. This security feature keeps tokens short-lived so
     | they have less time to be guessed. You may change this as needed.
     |
     */
 
-    'activation' => [
-        'email' => 'emails.activation',
-        'table' => 'account_activations',
+    'confirmation' => [
+        'email' => 'emails.confirmation',
+        'table' => 'account_confirmations',
         'expire' => 7,
     ],
 

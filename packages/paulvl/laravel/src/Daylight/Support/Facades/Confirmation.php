@@ -5,37 +5,37 @@ namespace Daylight\Support\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Daylight\Auth\Accounts\ActivationBroker
+ * @see \Daylight\Auth\Accounts\ConfirmationBroker
  */
-class Activation extends Facade
+class Confirmation extends Facade
 {
     /**
-     * Constant representing a successfully sent activation.
+     * Constant representing a successfully sent confirmation.
      *
      * @var string
      */
-    const ACTIVATION_LINK_SENT = 'activations.sent';
+    const CONFIRMATION_LINK_SENT = 'confirmations.sent';
 
     /**
-     * Constant representing a successfully account activation.
+     * Constant representing a successfully account confirmation.
      *
      * @var string
      */
-    const ACCOUNT_ACTIVATION = 'activations.activated';
+    const ACCOUNT_CONFIRMATION = 'confirmations.verified';
 
     /**
      * Constant representing the user not found response.
      *
      * @var string
      */
-    const INVALID_USER = 'activations.user';
+    const INVALID_USER = 'confirmations.user';
 
     /**
      * Constant representing an invalid token.
      *
      * @var string
      */
-    const INVALID_TOKEN = 'activations.token';
+    const INVALID_TOKEN = 'confirmations.token';
 
     /**
      * Get the registered name of the component.
@@ -44,6 +44,6 @@ class Activation extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'auth.activation';
+        return 'auth.confirmation';
     }
 }

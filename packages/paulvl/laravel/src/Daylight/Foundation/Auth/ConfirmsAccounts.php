@@ -1,14 +1,14 @@
 <?php
 
-namespace Illuminate\Foundation\Auth;
+namespace Daylight\Foundation\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Password;
+use Daylight\Support\Facades\Confirmation;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-trait ResetsPasswords
+trait ConfirmsAccounts
 {
     /**
      * Display the form to request a password reset link.
@@ -17,11 +17,11 @@ trait ResetsPasswords
      */
     public function getEmail()
     {
-        return view('auth.password');
+        return view('auth.confirmation');
     }
 
     /**
-     * Send a reset link to the given user.
+     * Send a confirmation link to the given user.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -30,15 +30,15 @@ trait ResetsPasswords
     {
         $this->validate($request, ['email' => 'required|email']);
 
-        $response = Password::sendResetLink($request->only('email'), function (Message $message) {
+        $response = Confirmation::sendConfirmationLink($request->only('email'), function (Message $message) {
             $message->subject($this->getEmailSubject());
         });
 
         switch ($response) {
-            case Password::RESET_LINK_SENT:
-                return redirect()->back()->with('status', trans($response));
+            case Confirmation::CONFIRMATION_LINK_SENT:
+                return redirect($this->loginPath())->with('status', trans($response));
 
-            case Password::INVALID_USER:
+            case Confirmation::INVALID_TOKEN:
                 return redirect()->back()->withErrors(['email' => trans($response)]);
         }
     }
@@ -50,7 +50,7 @@ trait ResetsPasswords
      */
     protected function getEmailSubject()
     {
-        return isset($this->subject) ? $this->subject : 'Your Password Reset Link';
+        return isset($this->subject) ? $this->subject : 'Your Account Confirmation Link';
     }
 
     /**
@@ -59,44 +59,24 @@ trait ResetsPasswords
      * @param  string  $token
      * @return \Illuminate\Http\Response
      */
-    public function getReset($token = null)
+    public function getConfirm($token = null)
     {
         if (is_null($token)) {
             throw new NotFoundHttpException;
         }
 
-        return view('auth.reset')->with('token', $token);
-    }
+        $credentials = ['token' => $token];
 
-    /**
-     * Reset the given user's password.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function postReset(Request $request)
-    {
-        $this->validate($request, [
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|confirmed|min:6',
-        ]);
-
-        $credentials = $request->only(
-            'email', 'password', 'password_confirmation', 'token'
-        );
-
-        $response = Password::reset($credentials, function ($user, $password) {
-            $this->resetPassword($user, $password);
+        $response = Confirmation::confirm($credentials, function ($user) {
+            $this->confirmAccount($user);
         });
 
         switch ($response) {
-            case Password::PASSWORD_RESET:
+            case Confirmation::ACCOUNT_CONFIRMATION:
                 return redirect($this->redirectPath());
 
             default:
                 return redirect()->back()
-                            ->withInput($request->only('email'))
                             ->withErrors(['email' => trans($response)]);
         }
     }
@@ -104,13 +84,12 @@ trait ResetsPasswords
     /**
      * Reset the given user's password.
      *
-     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
-     * @param  string  $password
+     * @param  \Daylight\Contracts\Auth\CanConfirmAccunt  $user
      * @return void
      */
-    protected function resetPassword($user, $password)
+    protected function confirmAccount($user)
     {
-        $user->password = bcrypt($password);
+        $user->active = true;
 
         $user->save();
 
@@ -129,5 +108,15 @@ trait ResetsPasswords
         }
 
         return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
+    }
+
+    /**
+     * Get the path to the login route.
+     *
+     * @return string
+     */
+    public function loginPath()
+    {
+        return property_exists($this, 'loginPath') ? $this->loginPath : '/auth/login';
     }
 }

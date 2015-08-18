@@ -3,9 +3,9 @@
 namespace Basicapp\Http\Controllers\Auth;
 
 use Basicapp\Http\Controllers\Controller;
-use Daylight\Foundation\Auth\ActivatesAccounts;
+use Daylight\Foundation\Auth\ConfirmsAccounts;
 
-class ActivationController extends Controller
+class ConfirmationController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
@@ -18,7 +18,7 @@ class ActivationController extends Controller
     |
     */
 
-    use ActivatesAccounts;
+    use ConfirmsAccounts;
 
     /**
      * Create a new password controller instance.

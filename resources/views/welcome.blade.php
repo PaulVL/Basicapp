@@ -33,12 +33,25 @@
             .title {
                 font-size: 96px;
             }
+
+            .link {
+                font-size: 30px;
+                text-decoration: none;
+                color: grey;
+            }
+            
+            .link:hover {
+                color: black;
+                font-weight: 550;
+            }
+
         </style>
     </head>
     <body>
         <div class="container">
             <div class="content">
-                <div class="title">Laravel 5</div>
+                <div class="title">Basicapp</div>
+                <a class="link" href="{{ url('/auth/login') }}">Log in</a>
             </div>
         </div>
     </body>

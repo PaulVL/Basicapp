@@ -14,8 +14,8 @@ return [
     */
    
     'user' => "We can't find a user with that e-mail address.",
-    'token' => 'This account activation token is invalid.',
-    'sent' => 'We have e-mailed your account activation link!',
-    'activated' => 'Your account has been activated!',
+    'token' => 'This account confirmation token is invalid.',
+    'sent' => 'We have e-mailed your account confirmation link!',
+    'confirmed' => 'Your account has been confirmed!',
 
 ];
