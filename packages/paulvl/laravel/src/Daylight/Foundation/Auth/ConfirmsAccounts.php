@@ -73,7 +73,7 @@ trait ConfirmsAccounts
 
         switch ($response) {
             case Confirmation::ACCOUNT_CONFIRMATION:
-                return redirect($this->redirectPath());
+                return redirect($this->redirectPath())->with('status', trans($response));
 
             default:
                 return redirect()->back()

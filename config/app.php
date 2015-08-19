@@ -139,6 +139,12 @@ return [
         Daylight\Auth\Accounts\AccountConfirmationServiceProvider::class,
 
         /*
+         * Other Service Providers...
+         */
+        Daylight\Auth\Accounts\AccountConfirmationServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
+
+        /*
          * Application Service Providers...
          */
         Basicapp\Providers\AppServiceProvider::class,
@@ -166,6 +172,7 @@ return [
         'Blade'     => Illuminate\Support\Facades\Blade::class,
         'Bus'       => Illuminate\Support\Facades\Bus::class,
         'Cache'     => Illuminate\Support\Facades\Cache::class,
+        'Carbon'    => Carbon\Carbon::class,
         'Config'    => Illuminate\Support\Facades\Config::class,
         'Cookie'    => Illuminate\Support\Facades\Cookie::class,
         'Crypt'     => Illuminate\Support\Facades\Crypt::class,
@@ -188,6 +195,7 @@ return [
         'Route'     => Illuminate\Support\Facades\Route::class,
         'Schema'    => Illuminate\Support\Facades\Schema::class,
         'Session'   => Illuminate\Support\Facades\Session::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Storage'   => Illuminate\Support\Facades\Storage::class,
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
