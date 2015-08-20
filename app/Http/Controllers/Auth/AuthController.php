@@ -8,6 +8,7 @@ use Socialite;
 use Basicapp\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Daylight\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Daylight\Foundation\SocialNetworks\AuthenticatesUsersWithFacebook;
 
 class AuthController extends Controller
 {
@@ -22,7 +23,7 @@ class AuthController extends Controller
     |
     */
 
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+    use AuthenticatesAndRegistersUsers, AuthenticatesUsersWithFacebook, ThrottlesLogins;
 
     // protected $redirectPath = '/';
 
@@ -71,30 +72,6 @@ class AuthController extends Controller
     public function getIndex($provider)
     {
         return 1;
-    }
-
-    
-
-    /**
-     * Redirect the user to the GitHub authentication page.
-     *
-     * @return Response
-     */
-    public function redirectToProvider()
-    {
-        return Socialite::driver('facebook')->redirect();
-    }
-
-    /**
-     * Obtain the user information from GitHub.
-     *
-     * @return Response
-     */
-    public function handleProviderCallback()
-    {
-        $user = Socialite::driver('facebook')->user();
-
-        return dd($user);
     }
 
 }
