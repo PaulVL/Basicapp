@@ -89,7 +89,7 @@ trait ConfirmsAccounts
      */
     protected function confirmAccount($user)
     {
-        $user->active = true;
+        $user->verified = true;
 
         $user->save();
 

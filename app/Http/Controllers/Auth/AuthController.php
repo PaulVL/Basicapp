@@ -68,6 +68,13 @@ class AuthController extends Controller
         ]);
     }
 
+    public function getIndex($provider)
+    {
+        return 1;
+    }
+
+    
+
     /**
      * Redirect the user to the GitHub authentication page.
      *
@@ -87,6 +94,7 @@ class AuthController extends Controller
     {
         $user = Socialite::driver('facebook')->user();
 
-        // $user->token;
+        return dd($user);
     }
+
 }
