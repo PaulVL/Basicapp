@@ -4,7 +4,6 @@ namespace Basicapp\Http\Controllers\Auth;
 
 use Basicapp\User;
 use Validator;
-use Socialite;
 use Basicapp\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Daylight\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -67,11 +66,6 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
-    }
-
-    public function getIndex($provider)
-    {
-        return 1;
     }
 
 }

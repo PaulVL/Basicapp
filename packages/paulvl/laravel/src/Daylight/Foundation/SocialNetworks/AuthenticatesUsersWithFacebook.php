@@ -2,6 +2,7 @@
 
 namespace Daylight\Foundation\SocialNetworks;
 
+use BadFunctionCallException;
 use Socialite;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Message;
@@ -9,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Daylight\Support\Facades\Confirmation;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Daylight\Contracts\Auth\CanConfirmAccount as CanConfirmAccountContract;
 
 trait AuthenticatesUsersWithFacebook
 {   
@@ -21,6 +21,10 @@ trait AuthenticatesUsersWithFacebook
      */
     public function getFacebook()
     {
+        if( !method_exists($this, 'createFromFacebookUser') ) {
+            throw new BadFunctionCallException("'createFromFacebookUser' method does not exists on ".get_class($this));
+        }
+        // return Socialite::driver('facebook')->redirect();
         return Socialite::driver('facebook')->redirect();
     }
 
@@ -33,10 +37,9 @@ trait AuthenticatesUsersWithFacebook
     {
         $user = Socialite::driver('facebook')->user();
 
-        return dd($user);
+        Auth::login($this->createFromFacebookUser($user));
 
-        Auth::login($this->create($user));
-
-        return redirect($this->redirectPath());
+        return redirect($this->redirectPath()->with('status', 'Logged in with Facebook.'));
     }
+
 }
