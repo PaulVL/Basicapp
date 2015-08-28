@@ -20,6 +20,7 @@ Route::get('home', 'HomeController@index');
 //Route::get('auth/facebook/callback', 'Auth\AuthController@handleProviderCallback');
 
 Route::controllers([
+	'auth/facebook' => 'Auth\FacebookAuthController',
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
 	'confirmation' => 'Auth\ConfirmationController',

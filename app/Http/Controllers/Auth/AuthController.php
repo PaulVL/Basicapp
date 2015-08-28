@@ -7,7 +7,6 @@ use Validator;
 use Basicapp\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Daylight\Foundation\Auth\AuthenticatesAndRegistersUsers;
-use Daylight\Foundation\SocialNetworks\AuthenticatesUsersWithFacebook;
 
 class AuthController extends Controller
 {
@@ -22,7 +21,7 @@ class AuthController extends Controller
     |
     */
 
-    use AuthenticatesAndRegistersUsers, AuthenticatesUsersWithFacebook, ThrottlesLogins;
+    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
     // protected $redirectPath = '/';
 
@@ -37,6 +36,15 @@ class AuthController extends Controller
     {
         $this->middleware('guest', ['except' => 'getLogout']);
     }
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'verified' => 'boolean',
+    ];
 
     /**
      * Get a validator for an incoming registration request.

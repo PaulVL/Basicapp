@@ -63,6 +63,21 @@
                             </div>
                         </div>
                     </form>
+
+                    <div class="row">
+                        <div class="col-md-4 col-md-offset-4 text-center">
+                            <h5 class="">Or sign up with</h5>
+                            <p><a href="/auth/facebook" class="btn btn-block btn-social btn-facebook">
+                                <i class="fa fa-facebook"></i>
+                                Sign up with Facebook
+                            </a></p>
+                            <p><a class="btn btn-block btn-social btn-google">
+                                <i class="fa fa-google"></i>
+                                Sign up with Google
+                            </a></p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

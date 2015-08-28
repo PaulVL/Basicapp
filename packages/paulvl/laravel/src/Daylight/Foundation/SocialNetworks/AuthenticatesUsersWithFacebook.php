@@ -24,7 +24,6 @@ trait AuthenticatesUsersWithFacebook
         if( !method_exists($this, 'createFromFacebookUser') ) {
             throw new BadFunctionCallException("'createFromFacebookUser' method does not exists on ".get_class($this));
         }
-        // return Socialite::driver('facebook')->redirect();
         return Socialite::driver('facebook')->redirect();
     }
 
@@ -37,9 +36,11 @@ trait AuthenticatesUsersWithFacebook
     {
         $user = Socialite::driver('facebook')->user();
 
+        return dd($user);
+
         Auth::login($this->createFromFacebookUser($user));
 
-        return redirect($this->redirectPath()->with('status', 'Logged in with Facebook.'));
+        return redirect($this->redirectPath())->with('status', 'Logged in with Facebook.');
     }
 
 }
