@@ -14,11 +14,10 @@ class CreateSocialAccountsTable extends Migration
     {
         Schema::create('social_accounts', function (Blueprint $table) {
             $table->string('id');
-            $table->string('provider');
-            $table->string('nickname');
-            $table->string('name');
             $table->string('email');
+            $table->string('provider');
             $table->string('avatar');
+            $table->integer('user_id');
             $table->timestamps();
         });
     }
