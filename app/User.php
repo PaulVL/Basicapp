@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Daylight\Auth\Accounts\CanConfirmAccount;
 use Daylight\Auth\SocialNetworks\CanLoginWithFacebook;
+use Daylight\Auth\SocialNetworks\CanLoginWithGoogle;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Daylight\Contracts\Auth\CanConfirmAccount as CanConfirmAccountContract;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract, CanConfirmAccountContract
 {
-    use Authenticatable, CanResetPassword, CanConfirmAccount, CanLoginWithFacebook;
+    use Authenticatable, CanResetPassword, CanConfirmAccount, CanLoginWithFacebook, CanLoginWithGoogle;
 
     /**
      * The database table used by the model.

@@ -2,10 +2,10 @@
 
 namespace Basicapp\Http\Controllers\Auth;
 
-use Daylight\Routing\FacebookAuthController as FacebookController;
+use Daylight\Routing\GoogleAuthController as GoogleController;
 use Basicapp\User;
 
-class FacebookAuthController extends FacebookController
+class GoogleAuthController extends GoogleController
 {
     public function create($callbackData)
     {

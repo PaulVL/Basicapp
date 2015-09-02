@@ -48,7 +48,7 @@ abstract class SocialNetworkController extends BaseController
     {
         $callbackData = Socialite::driver($this->provider)->user();
         $socialAccount = $this->socialAccountRepository->instance($callbackData);
-        $user = $socialAccount->exists() ? $this->socialAccountRepository->retrieveExistingUser($socialAccount, $callbackData) : $this->socialAccountRepository->createFromUser($this->create($callbackData), $socialAccount);
+        $user = $socialAccount->exists ? $this->socialAccountRepository->retrieveExistingUser($socialAccount, $callbackData) : $this->socialAccountRepository->createFromUser($this->create($callbackData), $socialAccount);
         Auth::login($user);
         return redirect($this->redirectPath())->with('status', 'Logged in with '.$this->provider);
     }

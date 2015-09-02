@@ -69,7 +69,7 @@
                                 <i class="fa fa-facebook"></i>
                                 Log in with Facebook
                             </a></p>
-                            <p><a class="btn btn-block btn-social btn-google">
+                            <p><a href="/auth/google" class="btn btn-block btn-social btn-google">
                                 <i class="fa fa-google"></i>
                                 Log in with Google
                             </a></p>
