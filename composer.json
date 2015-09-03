@@ -21,7 +21,7 @@
         ],
         "psr-4": {
             "Basicapp\\": "app/",
-            "Daylight\\": "packages/paulvl/laravel/src/Daylight/"
+            "Daylight\\": "packages/paulvl/daylight/src/"
         }
     },
     "autoload-dev": {
