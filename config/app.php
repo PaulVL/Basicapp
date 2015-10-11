@@ -141,6 +141,7 @@ return [
          * Other Service Providers...
          */
         Daylight\Auth\Accounts\AccountConfirmationServiceProvider::class,
+        Daylight\Auth\SocialNetworks\SocialNetworksServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
 
         /*
@@ -149,6 +150,7 @@ return [
         Basicapp\Providers\AppServiceProvider::class,
         Basicapp\Providers\EventServiceProvider::class,
         Basicapp\Providers\RouteServiceProvider::class,
+        PaulVL\Mysql\BackupServiceProvider::class,
 
     ],
 

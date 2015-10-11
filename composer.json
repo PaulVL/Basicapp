@@ -8,7 +8,8 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
         "laravel/socialite": "^2.0",
-        "paulvl/daylight": "^0.1.0"
+        "paulvl/daylight": "^0.1.0",
+        "league/flysystem-aws-s3-v3": "~1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -21,7 +22,9 @@
             "database"
         ],
         "psr-4": {
-            "Basicapp\\": "app/"
+            "Basicapp\\": "app/",
+            "Daylight\\": "packages/paulvl/daylight/src/",
+            "PaulVL\\Mysql\\": "dev-packages/paulvl/mysql/src/"
         }
     },
     "autoload-dev": {

@@ -22,3 +22,8 @@ Route::controllers([
 	'password' => 'Auth\PasswordController',
 	'confirmation' => 'Auth\ConfirmationController',
 ]);
+
+Route::get('/file', function(){
+	Storage::disk('s3')->delete('file.txt');
+	return 'done';
+});
